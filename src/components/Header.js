@@ -1,19 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles,fade } from "@material-ui/core/styles";
+import { makeStyles, fade,withStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
-import InputBase from '@material-ui/core/InputBase';
-
+import InputBase from "@material-ui/core/InputBase";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import AppBar from "@material-ui/core/AppBar";
+import clsx from "clsx";
+import AppBar from '@material-ui/core/AppBar';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+
+const styles = (theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  flex: {
+    flex: 1,
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
+  toolbarMargin: theme.mixins.toolbar,
+  aboveDrawer: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+});
+
 const useStyles = makeStyles((theme) => ({
-  root:{
-    flexGrow:1
+  root: {
+    flexGrow: 1,
   },
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -70,28 +93,72 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbarMargin: theme.mixins.toolbar,
 }));
-
+const sections = [
+  { title: "Technology", url: "#" },
+  { title: "Design", url: "#" },
+  { title: "Culture", url: "#" },
+  { title: "Business", url: "#" },
+  { title: "Politics", url: "#" },
+  { title: "Opinion", url: "#" },
+  { title: "Science", url: "#" },
+  { title: "Health", url: "#" },
+  { title: "Style", url: "#" },
+  { title: "Travel", url: "#" },
+];
+const MyDrawer = withStyles(styles)(
+  ({ classes, variant, open, onClose, onItemClick }) => (
+    <Drawer variant={variant} open={open} onClose={onClose}>
+      <div
+        className={clsx({
+          [classes.toolbarMargin]: variant === "persistent",
+        })}
+      />
+      <List>
+        <ListItem button onClick={onItemClick("Home")}>
+          <ListItemText>Home</ListItemText>
+        </ListItem>
+        <ListItem button onClick={onItemClick("Page 2")}>
+          <ListItemText>Page 2</ListItemText>
+        </ListItem>
+        <ListItem button onClick={onItemClick("Page 3")}>
+          <ListItemText>Page 3</ListItemText>
+        </ListItem>
+      </List>
+    </Drawer>
+  )
+);
 export default function Header(props) {
+  const [open, setOpen] = useState(false);
+  const [dd, setTitle] = useState("Home");
+  const variant = "temporary"
+  const onItemClick = (dd) => () => {
+    setTitle(dd);
+    setDrawer(variant === "temporary" ? false : drawer);
+  };
+
   const classes = useStyles();
   const { sections, title } = props;
-
+  const [drawer, setDrawer] = useState(false);
+  const toggleDrawer = () => {
+    setDrawer(!drawer);
+  };
   return (
-    <React.Fragment className = {classes.root}>
-      <AppBar postition="fixed">
-      <Toolbar className={classes.toolbar}>
+    <div className={classes.root}>
+      <React.Fragment>
+        <AppBar postition="fixed">
+          <Toolbar className={classes.toolbar}>
+            <Typography
+              component="h2"
+              variant="h5"
+              color="inherit"
+              align="center"
+              noWrap
+              className={classes.toolbarTitle}
+            >
+              {"Shogong"}
+            </Typography>
 
-          <Typography
-            component="h2"
-            variant="h5"
-            color="inherit"
-            align="center"
-            noWrap
-            className={classes.toolbarTitle}
-          >
-            {"Shogong"}
-          </Typography>
-
-          {/* {sections.map((section) => (
+            {/* {sections.map((section) => (
           <Link
             color="inherit"
             noWrap
@@ -103,38 +170,46 @@ export default function Header(props) {
             {section.title}
           </Link>
         ))} */}
-        </Toolbar>
-        <Toolbar
-          component="nav"
-          variant="dense"
-          className={classes.toolbarSecondary}
-        >
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
+          </Toolbar>
+          <Toolbar
+            component="nav"
+            variant="dense"
+            className={classes.toolbarSecondary}
           >
-            <MenuIcon />
-          </IconButton>
+            <IconButton
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer}
+            >
+              <MenuIcon />
+            </IconButton>
 
-          <div className={classes.search} style={{margin:'0 auto'}}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+            <div className={classes.search} style={{ margin: "0 auto" }}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ "aria-label": "search" }}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
-        </Toolbar>
-      </AppBar>
-      <div className={classes.toolbarMargin} />
-      <div className={classes.toolbarMargin} />
-    </React.Fragment>
+          </Toolbar>
+        </AppBar>
+        <div className={classes.toolbarMargin} />
+        <div className={classes.toolbarMargin} />
+      </React.Fragment>
+      <MyDrawer
+        open={drawer}
+        onClose={toggleDrawer}
+        onItemClick={onItemClick}
+        variant={variant}
+      />
+    </div>
   );
 }
 
