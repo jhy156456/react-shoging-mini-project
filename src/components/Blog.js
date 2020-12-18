@@ -1,6 +1,6 @@
 import React from "react";
 import { Query } from "react-apollo";
-import listStoresQuery from "../lib/api/posts";
+import {listStoresQuery} from "../lib/api/posts";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -17,7 +17,10 @@ import Footer from "./Footer";
 import post1 from "./blog-post.1.md";
 import post2 from "./blog-post.2.md";
 import post3 from "./blog-post.3.md";
-import AppBarInteraction from "./common/Drawer";
+import TextField from '@material-ui/core/TextField';
+import HighlightsSelect from './common/HighlightsSelect'
+
+// import Autocomplete from '@material-ui/lab/Autocomplete';
 const useStyles = makeStyles((theme) => ({
   mainGrid: {
     marginTop: theme.spacing(3),
@@ -44,6 +47,22 @@ const featuredPosts = [
   },
   {
     title: "Post title",
+    date: "Nov 11",
+    description:
+      "This is a wider card with supporting text below as a natural lead-in to additional content.",
+    image: "https://source.unsplash.com/random",
+    imageText: "Image Text",
+  },
+  {
+    title: "Post title2",
+    date: "Nov 11",
+    description:
+      "This is a wider card with supporting text below as a natural lead-in to additional content.",
+    image: "https://source.unsplash.com/random",
+    imageText: "Image Text",
+  },
+  {
+    title: "Post title3",
     date: "Nov 11",
     description:
       "This is a wider card with supporting text below as a natural lead-in to additional content.",
@@ -88,13 +107,20 @@ export default function Blog() {
         <Container maxWidth="lg">
           <Header title="Blog"  />
           <main>
+          {/* <Autocomplete
+      id="combo-box-demo"
+      options={top100Films}
+      getOptionLabel={(option) => option.title}
+      style={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+    /> */}
             <MainFeaturedPost post={mainFeaturedPost} />
-            <Grid container spacing={4}>
-              {featuredPosts.map((post) => (
+            <HighlightsSelect/>
+            <Grid container spacing={4} justify="center">
+                {featuredPosts.map((post) => (
                 <FeaturedPost key={post.title} post={post} />
-              ))}
-
-              {/* <Query
+              ))} 
+              <Query
               query={listStoresQuery}
               variables={{
                 page: 1,
@@ -106,12 +132,12 @@ export default function Blog() {
                 loading ? (
                   <p>불러오는중..</p>
                 ) : (
-                  <FeaturedPost key={data.id} post={data.business} />
+                  <p>{console.log(data)}</p>
                 )
               }
-            <Query query={listStoresQuery}></Query> */}
+            </Query>
             </Grid>
-            <Grid container spacing={5} className={classes.mainGrid}>
+            <Grid container spacing={5} className={classes.mainGrid} >
               <Main title="From the firehose" posts={posts} />
               <Sidebar
                 title={sidebar.title}

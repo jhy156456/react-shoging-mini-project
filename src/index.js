@@ -7,7 +7,7 @@ import { ApolloProvider } from "react-apollo";
 import Apolloclient from "apollo-boost";
 
 const client = new Apolloclient({
-  uri: "http://ec2-54-180-98-167.ap-northeast-2.compute.amazonaws.com:8080/graphql",
+  uri: "http://13.124.188.131:8000/graphql",
 });
 ReactDOM.render(
   <React.StrictMode>
