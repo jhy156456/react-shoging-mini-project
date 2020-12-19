@@ -13,6 +13,7 @@ import TwitterIcon from "@material-ui/icons/Twitter";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import PhoneIcon from "@material-ui/icons/Phone";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   card: {
     display: "flex",
@@ -37,19 +38,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FeaturedPost(props) {
   const classes = useStyles();
-  const { post } = props;
-  console.log(post);
-
+  const { business } = props.post;
   return (
     <Grid item lg={4} md={6} xs={12}>
-      <CardActionArea component="a">
+      <CardActionArea component="div"  >
+        <Link underline='none' to={`/store/${props.post.id}`}  style={{ textDecoration: 'none', color: 'white' }}>
         <Card className={classes.card}>
           <div className={classes.cardDetails}>
             <CardContent className={classes.cardcontent}>
               <Grid container justify="space-around">
                 <Grid item xs={3} sm={3} md={3}>
                   <Typography align="center" variant="h6">
-                    제조사명
+                    {business.license_name}
                   </Typography>
                 </Grid>
                 <Grid item xs={3} sm={3} md={3}>
@@ -123,7 +123,9 @@ export default function FeaturedPost(props) {
               title={post.imageTitle}
             />
           </Hidden> */}
+
         </Card>
+        </Link>
       </CardActionArea>
     </Grid>
   );

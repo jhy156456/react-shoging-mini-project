@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Query } from "react-apollo";
-import {listStoresQuery} from "../lib/api/posts";
+import { listStoresQuery } from "../lib/api/posts";
 import { makeStyles } from "@material-ui/core/styles";
+import { Box } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
@@ -17,13 +18,19 @@ import Footer from "./Footer";
 import post1 from "./blog-post.1.md";
 import post2 from "./blog-post.2.md";
 import post3 from "./blog-post.3.md";
-import TextField from '@material-ui/core/TextField';
-import HighlightsSelect from './common/HighlightsSelect'
-
+import TextField from "@material-ui/core/TextField";
+import HighlightsSelect from "./common/HighlightsSelect";
+import { Typography } from "@material-ui/core";
+import ManufacturerDetailCard from "./manufacturer/ManufacturerDetailCard";
+import data from "./manufacturer/data";
+import ManufacturerPost from "./ManufacturerPost";
 // import Autocomplete from '@material-ui/lab/Autocomplete';
 const useStyles = makeStyles((theme) => ({
   mainGrid: {
     marginTop: theme.spacing(3),
+  },
+  productCard: {
+    height: "100%",
   },
 }));
 
@@ -99,45 +106,46 @@ const sidebar = {
 
 export default function Blog() {
   const classes = useStyles();
-
+  const [products] = useState(data);
   return (
     <div>
       <React.Fragment>
         <CssBaseline />
-        <Container maxWidth="lg">
-          <Header title="Blog"  />
+
           <main>
-          {/* <Autocomplete
-      id="combo-box-demo"
-      options={top100Films}
-      getOptionLabel={(option) => option.title}
-      style={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
-    /> */}
             <MainFeaturedPost post={mainFeaturedPost} />
-            <HighlightsSelect/>
-            <Grid container spacing={4} justify="center">
-                {featuredPosts.map((post) => (
-                <FeaturedPost key={post.title} post={post} />
-              ))} 
-              <Query
-              query={listStoresQuery}
-              variables={{
-                page: 1,
-                user_id: "shogong",
-                required: true,
-              }}
-            >
-              {({ data, loading }) =>
-                loading ? (
-                  <p>불러오는중..</p>
-                ) : (
-                  <p>{console.log(data)}</p>
-                )
-              }
-            </Query>
+            <Typography align="left">상세 필터</Typography>
+            <Grid container justify="flex-start">
+              <Grid item>
+                <HighlightsSelect label="지역" />
+              </Grid>
+              <Grid item>
+                <HighlightsSelect label="생산 방식" />
+              </Grid>
             </Grid>
-            <Grid container spacing={5} className={classes.mainGrid} >
+            <Grid container spacing={4} justify="flex-start">
+              <Query
+                query={listStoresQuery}
+                variables={{
+                  page: 0,
+                  user_id: "shogong",
+                  required: true,
+                }}
+              >
+                {({ data, loading }) =>
+                  loading ? (
+                    <p>불러오는중..</p>
+                  ) : (
+                    <>
+                      {data.adminUser.result.map((post) => (
+                        <ManufacturerPost key={post.id} post={post} />
+                      ))}
+                      </>
+                  )
+                }
+              </Query>
+            </Grid>
+            <Grid container spacing={5} className={classes.mainGrid}>
               <Main title="From the firehose" posts={posts} />
               <Sidebar
                 title={sidebar.title}
@@ -146,12 +154,21 @@ export default function Blog() {
                 social={sidebar.social}
               />
             </Grid>
+
+            <Box mt={3}>
+              <Grid container spacing={3}>
+                {products.map((product) => (
+                  <Grid item key={product.id} lg={4} md={6} xs={12}>
+                    <ManufacturerDetailCard
+                      className={classes.productCard}
+                      product={product}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
           </main>
-        </Container>
-        <Footer
-          title="Footer"
-          description="Something here to give the footer a purpose!"
-        />
+
       </React.Fragment>
     </div>
   );

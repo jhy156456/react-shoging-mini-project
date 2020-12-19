@@ -4,15 +4,16 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 
-export default function Highlights() {
+export default function Highlights(props) {
+  const { label } = props;
   return (
     <Autocomplete
       id="highlights-demo"
-      style={{ width: 300 }}
+      style={{ width: 150, marginRight:10}}
       options={top100Films}
       getOptionLabel={(option) => option.title}
       renderInput={(params) => (
-        <TextField {...params} label="Highlights" variant="outlined" margin="normal" />
+        <TextField {...params} label={label} variant="outlined" margin="normal" />
       )}
       renderOption={(option, { inputValue }) => {
         const matches = match(option.title, inputValue);
